@@ -3,20 +3,20 @@ package libClases;
 import java.util.Scanner;
 
 public class Empresa implements Cloneable, Proceso{
-    private Cliente[] t;
+    private Cliente[] clientes;
     private int n;
     private int nmax;
 
-    private int buscar(Cliente c, int ini){
-        for (int i=ini; i<n;i++){
-            if (t[i].equals(c)){
+    private int buscar(Cliente c){
+        for (int i=0; i<n;i++){
+            if (clientes[i].equals(c)){
                 return i;
             }
         }return -1;
     }
-private int buscar(String nif, int ini){
-    for (int i=ini; i<n;i++){
-        if (t[i].getNif().equals(nif)){
+private int buscar(String nif){
+    for (int i=0; i<n;i++){
+        if (clientes[i].getNif().equals(nif)){
             return i;
         }
     }return -1;
@@ -24,7 +24,7 @@ private int buscar(String nif, int ini){
 public Empresa() {
     n=0;
     nmax=5;
-    t=new Cliente[nmax];
+    clientes=new Cliente[nmax];
 }
 
 public int getN() {
@@ -36,71 +36,84 @@ public int getNmax() {
 }
 
 public void alta(Cliente c){
-    if (buscar(c,0)!=-1){
+    if (buscar(c)!=-1){
         return;
     }
     if(n==nmax){
-        Cliente[] aux=t;
+        Cliente[] aux=clientes;
         nmax+=5;
         aux=new Cliente[nmax];
         for (int i=0; i<n; i++){
-            aux[i] = t[i];
+            aux[i] = clientes[i];
         }
-    t = aux;
+    clientes = aux;
 
     }
-    t[n]=c;
+    clientes[n]=c;
     n++;
 }
 
-public void baja(){
-        int pos;
-        String nif, resp;
+    public void baja() {
+        String nif, nombre;
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introducza el nif del cliente a dar de baja: ");
+        System.out.println("Introduzca el nif de cliente para dar de baja: ");
         nif = sc.nextLine();
-        baja(nif);
-        sc.close();
-}
+        int pos = buscar(nif);
+        if (pos == -1) {
+            System.out.println("Cliente no encontrado: ");
+            return;
+        }
+        clientes[pos].ver();
+        System.out.println("¿Seguro que desea eliminarlo (s/n): ");
+        char s = sc.next().charAt(0);
+        if (s == 's' || s == 'S') {
+            nombre = clientes[pos].getNombre();
+            for (int i = pos; i < n - 1; i++) {
+                clientes[i] = clientes[i + 1];
+            }
+            if (nmax - 5 == n && nmax != 5) {
+                Cliente[] aux = clientes;
+                for (int i = 0; i < n; i++) {
+                    aux[i] = clientes[i];
+                }
+                clientes = aux;
+            }
+            clientes[n - 1] = null;
+            n--;
+            System.out.println("El cliente " + nombre + " con nif " + nif + " ha sido eliminado. \n");
+        } else {
+            System.out.println("El cliente con nif " + clientes[pos].getNif() + " no se elimina. \n");
+        }
+    }
 
-public void baja(String nif){
-        int pos = buscar(nif,0);
+    public void baja(String dni){
+        int pos = buscar(dni);
         Cliente cli;
         char car;
         Scanner sc = new Scanner(System.in);
-        if(pos!=-1){
-            System.out.println("No se ha encontrado el nif: ");
+        if (pos == -1) {
+           // System.out.println("No se ha encontrado el nif: ");
             return;
         }
-        Cliente c;
-        cli = t[pos];
-        cli.ver();
-         System.out.println("¿Seguro que desea eliminarlo (s/n)? ");
-        car = sc.next().charAt(0);
-        if(car=='s'){
-            for(int i = pos; i<n -1; i++){
-                t[i] = t[i+1];
-            }
-            t[n-1]=null;
-            n--;
+        for (int i = pos; i < n - 1; i++) {
+                clientes[i] = clientes[i + 1];
         }
-        if(n % 5 == 0 && nmax !=5){
-            Cliente[] aux=t;
-            nmax-=5;
-            aux=new Cliente[nmax];
-            for (int i=0; i<n; i++){
-                aux[i] = t[i];
+        clientes[n - 1] = null;
+        n--;
+        if (n % 5 == 0 && nmax != 5) {
+            Cliente[] aux = clientes;
+            nmax -= 5;
+            aux = new Cliente[nmax];
+            for (int i = 0; i < n; i++) {
+                aux[i] = clientes[i];
             }
-            t = aux;
+            clientes = aux;
 
         }
-        sc.close();
-
-}
+    }
 
 
-
-    public void alta(){
+    public void alta () {
         String nif, nombre, nacionalidad;
         int tipo, pos;
         float minutos;
@@ -110,9 +123,10 @@ public void baja(String nif){
         Scanner sc = new Scanner(System.in); // No cerrar este Scanner
         System.out.println("Dni: ");
         nif = sc.nextLine();
-        pos = buscar(nif, 0);
-        if (pos != -1){
+        pos = buscar(nif);
+        if (pos != -1) {
             System.out.println("Ya existe un Cliente con ese dni ");
+            clientes[pos].ver();
         } else {
             System.out.println("Nombre: ");
             nombre = sc.nextLine();
@@ -124,7 +138,7 @@ public void baja(String nif){
             minutos = sc.nextFloat();
             System.out.println("Indique tipo de cliente (1-Movil, 2-TarifaPlana): ");
             tipo = sc.nextInt();
-            if(tipo == 1){
+            if (tipo == 1) {
                 System.out.println("Precio por minuto: ");
                 precio = sc.nextFloat();
                 System.out.println("Fecha fin de permanencia: ");
@@ -141,59 +155,69 @@ public void baja(String nif){
     }
 
 
-    public String toString() {
-        String clien ="";
-        for(int i=0 ; i<n ; i++){
-            clien += t[i].toString()+"\n";
+    public String toString () {
+        String clien = "";
+        for (int i = 0; i < n; i++) {
+            clien += clientes[i].toString() + "\n";
         }
         return clien;
-        }
+    }
 
     @Override
-    public void ver() {
+    public void ver () {
         System.out.println(toString());
     }
 
-    public float factura(){
-        float factura=0;
+    public float factura () {
+        float factura = 0;
         ClienteMovil cm;
         ClienteTarifaPlana ct;
-        for(int i = 0 ; i<n ; i++){
-            if(t[i].getClass() == ClienteMovil.class){
-                cm=(ClienteMovil)t[i];
+        for (int i = 0; i < n; i++) {
+            if (clientes[i].getClass() == ClienteMovil.class) {
+                cm = (ClienteMovil) clientes[i];
                 factura += cm.factura();
-            }else{
-                ct=(ClienteTarifaPlana)t[i];
+            } else {
+                ct = (ClienteTarifaPlana) clientes[i];
                 factura += ct.factura();
             }
         }
         return factura;
     }
 
-    public Object clone(){
-        Empresa e = new Empresa();
-        for(int i=0 ; i<n ; i++){
-            e.alta(t[i]);
+    public Object clone () {
+        Empresa emp= new Empresa();
+        ClienteMovil cm;
+        ClienteTarifaPlana ct;
+        for (int i = 0; i < n; i++) {
+            if(clientes[i].getClass()==ClienteMovil.class){
+                cm = new ClienteMovil((ClienteMovil) clientes[i]);
+                emp.alta(cm);
+            }else{
+                ct = new ClienteTarifaPlana((ClienteTarifaPlana) clientes[i]);
+                emp.alta(ct);
+            }
+
         }
-        return e;
+        return emp;
     }
 
-    public int nClienteMovil(){
+    public int nClienteMovil () {
         int nCM = 0;
-        for(int i=0 ; i<n ; i++){
-            if(t[i].getClass() == ClienteMovil.class){
+        for (int i = 0; i < n; i++) {
+            if (clientes[i].getClass() == ClienteMovil.class) {
                 nCM++;
             }
         }
         return nCM;
     }
 
-    public void descuento(int desc){
-        ClienteMovil cm;
-        for(int i=0 ; i<n ; i++){
-            if(t[i].getClass() == ClienteMovil.class){
-                cm = (ClienteMovil)t[i];
-                cm.setPrecioMinuto(cm.getPrecioMinuto()*(100-desc)/100);
+    public void descuento(int desc) {
+        for (int i = 0; i < n; i++) {
+            if (clientes[i].getClass() == ClienteMovil.class) { // Comparación directa de clases
+                ClienteMovil cm = (ClienteMovil) clientes[i]; // Cast seguro
+                // Aplicar el descuento directamente
+                float precioConDescuento = cm.getPrecioMinuto() * (1 - desc / 100.0f);
+                cm.setPrecioMinuto(precioConDescuento);
             }
         }
     }
