@@ -42,6 +42,5 @@ public class Prueba2 {
         System.out.println("g tiene " + g.getN() + " clientes y gcopia " + gcopia.getN());
         System.out.print("g tiene " + g.nClienteMovil() + " clientes de Tarifa Movil ");
         System.out.println("y " + (g.getN()-g.nClienteMovil()) + " de Tarifa Plana");
-
     }
 }

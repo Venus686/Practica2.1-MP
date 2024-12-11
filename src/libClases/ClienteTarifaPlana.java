@@ -62,7 +62,6 @@ public class ClienteTarifaPlana extends Cliente {
     public Object clone() {
         return new ClienteTarifaPlana(this);
     }
-
     @Override
     public String toString() {
         String s=super.toString();

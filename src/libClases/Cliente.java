@@ -104,5 +104,4 @@ public class Cliente implements Cloneable,Proceso{
         return (nif.equals(c.nif));
         //return (nif == c.nif); se compara las referencias de los objetos
     }
-
 }

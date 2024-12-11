@@ -47,4 +47,5 @@ public class Prueba1 {
             System.out.println("c[4] y c3 no son iguales (mismo dni pero distinto tipo)");
         }
     }
+
 }

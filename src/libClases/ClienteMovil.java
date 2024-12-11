@@ -56,9 +56,9 @@ public class ClienteMovil extends Cliente implements Proceso, Cloneable {
         return new ClienteMovil(super.getNif(), super.getNombre(), super.getFechaNac(), super.getFechaAlta(), fPermanencia, minutos, precioMinuto);
     }
 
-
     public String toString() {
         return super.toString() + " " + fPermanencia + " " + minutos + " x " + precioMinuto + " --> " + factura();
     }
+
 }
 
