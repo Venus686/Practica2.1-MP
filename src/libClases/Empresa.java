@@ -54,35 +54,21 @@ public void alta(Cliente c){
 }
 
     public void baja() {
-        String nif, nombre;
+        String nif, nombre, resp;
         Scanner sc = new Scanner(System.in);
         System.out.println("Introduzca el nif de cliente para dar de baja: ");
         nif = sc.nextLine();
         int pos = buscar(nif);
-        if (pos == -1) {
-            System.out.println("Cliente no encontrado: ");
-            return;
-        }
-        clientes[pos].ver();
-        System.out.println("¿Seguro que desea eliminarlo (s/n): ");
-        char s = sc.next().charAt(0);
-        if (s == 's' || s == 'S') {
-            nombre = clientes[pos].getNombre();
-            for (int i = pos; i < n - 1; i++) {
-                clientes[i] = clientes[i + 1];
+        if (pos != -1) {
+            clientes[pos].ver();
+            System.out.println("¿Seguro que desea eliminarlo (s/n): ");
+            resp = sc.nextLine();
+            if (resp.equals("s")) {
+                System.out.println("El cliente " +clientes[pos].getNombre() + " con nif " + nif + " ha sido eliminado. \n");
+                baja(nif);
+            } else {
+                System.out.println("El cliente con nif " + clientes[pos].getNif() + " no se elimina. \n");
             }
-            if (nmax - 5 == n && nmax != 5) {
-                Cliente[] aux = clientes;
-                for (int i = 0; i < n; i++) {
-                    aux[i] = clientes[i];
-                }
-                clientes = aux;
-            }
-            clientes[n - 1] = null;
-            n--;
-            System.out.println("El cliente " + nombre + " con nif " + nif + " ha sido eliminado. \n");
-        } else {
-            System.out.println("El cliente con nif " + clientes[pos].getNif() + " no se elimina. \n");
         }
     }
 
