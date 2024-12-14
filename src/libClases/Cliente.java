@@ -75,7 +75,7 @@ public class Cliente implements Cloneable,Proceso{
    public void setFechaAlta(int dia, int mes,int anio){
         this.fechaAlta.setFecha(dia,mes,anio);
    }
-  public static void setFechaPorDefecto(Fecha f){
+    public static void setFechaPorDefecto(Fecha f){
        FechaAltaPorDefecto.setFecha(f.getDia(),f.getMes(),f.getAnio());
     }
 

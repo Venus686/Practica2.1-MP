@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Empresa implements Cloneable, Proceso{
     private Cliente[] clientes;
     private int n;
+
     private int nmax;
 
     private int buscar(Cliente c){
@@ -47,7 +48,6 @@ public void alta(Cliente c){
             aux[i] = clientes[i];
         }
     clientes = aux;
-
     }
     clientes[n]=c;
     n++;
@@ -94,7 +94,6 @@ public void alta(Cliente c){
                 aux[i] = clientes[i];
             }
             clientes = aux;
-
         }
     }
 
@@ -171,20 +170,17 @@ public void alta(Cliente c){
     }
 
     public Object clone () {
-        Empresa emp= new Empresa();
-        ClienteMovil cm;
-        ClienteTarifaPlana ct;
-        for (int i = 0; i < n; i++) {
-            if(clientes[i].getClass()==ClienteMovil.class){
-                cm = new ClienteMovil((ClienteMovil) clientes[i]);
-                emp.alta(cm);
-            }else{
-                ct = new ClienteTarifaPlana((ClienteTarifaPlana) clientes[i]);
-                emp.alta(ct);
+        Empresa obj = null;
+        try{
+            obj = (Empresa) super.clone();
+            obj.clientes = (Cliente[]) this.clientes.clone();
+            for(int i = 0; i < n; i++) {
+                obj.clientes[i] = (Cliente) obj.clientes[i].clone();
             }
-
-        }
-        return emp;
+            }catch(CloneNotSupportedException ex){
+                System.out.println("no se puede duplicar");;
+            }
+        return obj;
     }
 
     public int nClienteMovil () {
@@ -208,5 +204,29 @@ public void alta(Cliente c){
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        int pos;
+        if(this == obj){
+            return true;
+        }
+        if(obj == null){
+            return false;
+        }
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        Empresa  e = (Empresa) obj;
 
+        if(this.n != e.n){
+            return false;
+        }
+        for(int i = 0; i < n; i++) {
+            pos = e.buscar(this.clientes[i].getNif());
+            if(pos == -1 || !e.clientes[pos].equals(this.clientes[i])){
+             return false;
+            }
+        }
+        return true;
+    }
 }
